@@ -1,0 +1,671 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "help@myvariant.info",
+      "name": "Chunlei Wu",
+      "x-id": "https://github.com/newgene",
+      "x-role": "responsible developer"
+    },
+    "description": "Documentation of the MyVariant.info Variant Query web services. Learn more about [MyVariant.info](http://myvariant.info/)",
+    "termsOfService": "http://myvariant.info/terms/",
+    "title": "MyVariant.info API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "description": "Encrypted Production server",
+      "url": "https://myvariant.info/v1"
+    },
+    {
+      "description": "Production server",
+      "url": "http://myvariant.info/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "variant"
+    },
+    {
+      "name": "query"
+    },
+    {
+      "name": "metadata"
+    },
+    {
+      "name": "translator"
+    },
+    {
+      "name": "biothings"
+    }
+  ],
+  "paths": {
+    "/metadata": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/callback",
+            "in": "query",
+            "name": "callback"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MyVariant.info metadata object"
+          }
+        },
+        "summary": "Get metadata about the data available from MyVariant.info.",
+        "tags": [
+          "metadata"
+        ]
+      }
+    },
+    "/metadata/fields": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Pass a search term to filter the available fields, e.g. \"search=clinvar\".",
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Pass a prefix string to filter the available fields, e.g. \"prefix=refseq\".",
+            "in": "query",
+            "name": "prefix",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/callback",
+            "in": "query",
+            "name": "callback"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MyVariant.info metadata fields object"
+          }
+        },
+        "summary": "Get metadata about the data fields available from MyVariant.info.",
+        "tags": [
+          "metadata"
+        ]
+      }
+    },
+    "/query": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Query string. Examples \"rs752396467\", \"possibly_damaging\", \"CDK7\". The detailed query syntax can be found from our [docs](http://docs.myvariant.info/en/latest/doc/variant_query_service.html).",
+            "example": "CDK7",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-requestTemplate": [
+              {
+                "template": "cadd.gene.genename:{{input}} OR cgi.gene:{{input}} OR clinvar.gene.symbol:{{input}} OR dbnsfp.genename:{{input}} OR dbsnp.gene.symbol:{{input}} OR docm.genename:{{input}} OR emv.gene:{{input}} OR evs.gene.symbol:{{input}} OR snpeff.ann.genename:{{input}}",
+                "valueType": "http://identifiers.org/hgnc.symbol/"
+              },
+              {
+                "template": "clinvar.rsid:{{input}} OR dbnsfp.rsid:{{input}} OR dbsnp.rsid:{{input}} OR evs.rsid:{{input}}",
+                "valueType": "http://identifiers.org/dbsnp/"
+              },
+              {
+                "template": "dbnsfp.ensembl.geneid:{{input}} OR cadd.gene.gene_id:{{input}}",
+                "valueType": "http://identifiers.org/ensembl.gene/"
+              },
+              {
+                "template": "dbnsfp.ensembl.transcriptid:{{input}} OR cadd.gene.feature_id:{{input}}",
+                "valueType": "http://identifiers.org/ensembl.transcript"
+              },
+              {
+                "template": "dbnsfp.ensembl.proteinid:{{input}}",
+                "valueType": "http://identifiers.org/ensembl.protein/"
+              },
+              {
+                "template": "cadd.gene.ccds_id:{{input}}",
+                "valueType": "http://identifiers.org/ccds/"
+              },
+              {
+                "template": "dbnsfp.uniprot.acc:{{input}}",
+                "valueType": "http://identifiers.org/uniprot/"
+              },
+              {
+                "template": "clinvar.omim:{{input}}",
+                "valueType": "http://identifiers.org/omim/"
+              },
+              {
+                "template": "clinvar.rcv.conditions.identifiers.efo:{{input}}",
+                "valueType": "http://identifiers.org/efo/"
+              },
+              {
+                "template": "clinvar.rcv.conditions.identifiers.orphanet:{{input}}",
+                "valueType": "http://identifiers.org/orphanet/"
+              },
+              {
+                "template": "clinvar.gene.id:{{input}} OR dbsnp.gene.geneid:{{input}}",
+                "valueType": "http://identifiers.org/hgnc/"
+              },
+              {
+                "template": "civic.evidence_items.source.pubmed_id:{{input}} OR docm.pubmed_id:{{input}} OR gwassnps.pubmed:{{input}}",
+                "valueType": "http://identifiers.org/pubmed/"
+              },
+              {
+                "template": "clinvar.rcv.clinical_significance:{{input}}",
+                "valueType": "http://identifiers.org/clinicalsignificance/"
+              },
+              {
+                "template": "civic.evidence_items.drugs.name:{{input}}",
+                "valueType": "http://biothings.io/terms/drugname/"
+              }
+            ],
+            "x-valueType": [
+              "http://identifiers.org/hgnc.symbol/",
+              "http://identifiers.org/dbsnp/",
+              "http://identifiers.org/ensembl.gene/",
+              "http://identifiers.org/ensembl.transcript/",
+              "http://identifiers.org/ensembl.protein/",
+              "http://identifiers.org/ccds/",
+              "http://identifiers.org/uniprot/",
+              "http://identifiers.org/clinvar/",
+              "http://identifiers.org/omim/",
+              "http://identifiers.org/efo/",
+              "http://identifiers.org/orphanet/",
+              "http://identifiers.org/hgnc/",
+              "http://identifiers.org/pubmed/",
+              "http://identifiers.org/refseq/",
+              "http://identifiers.org/clinicalsignificance/",
+              "http://biothings.io/terms/drugname/"
+            ]
+          },
+          {
+            "$ref": "#/components/parameters/fields",
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/size",
+            "in": "query",
+            "name": "size"
+          },
+          {
+            "$ref": "#/components/parameters/from",
+            "in": "query",
+            "name": "from"
+          },
+          {
+            "$ref": "#/components/parameters/sort",
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "description": "a single field or comma-separated fields to return facets, for example, \"facets=clinvar.gene.id\", \"facets=clinvar.gene.id,dbnsfp.uniprot.acc\".",
+            "in": "query",
+            "name": "facets",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/callback",
+            "in": "query",
+            "name": "callback"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "in": "query",
+            "name": "dotfield"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "in": "query",
+            "name": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResult"
+                }
+              }
+            },
+            "description": "A query response object with \"hits\" property",
+            "x-JSONLDContext": "https://raw.githubusercontent.com/NCATS-Tangerine/translator-api-registry/master/myvariant.info/jsonld_context/myvariant_query_1.1.json",
+            "x-responseValueType": [
+              {
+                "path": "hits._id",
+                "valueType": "http://identifiers.org/hgvs/"
+              }
+            ]
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            },
+            "description": "A response indicating an improperly formatted query"
+          }
+        },
+        "summary": "Make variant query and return matching variant list. Support JSONP and CORS as well.",
+        "tags": [
+          "query"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fields",
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "in": "query",
+            "name": "dotfield"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "in": "query",
+            "name": "email"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "q": {
+                    "description": "multiple query terms seperated by comma (also support \"+\" or white space), but no wildcard, e.g., \"q=rs58991260,rs2500\" or \"q=rs58991260+rs2500\"",
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "description": "Specify one or more fields (separated by comma) as the search \"scopes\", e.g., \"scopes=dbsnp.rsid\". The available \"fields\" that can be passed to \"scopes\" parameter are listed [here](http://docs.myvariant.info/en/latest/doc/data.html#available-fields). Default: \"scopes=_id\" (HGVS id).",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "q"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryPOSTResult"
+                }
+              }
+            },
+            "description": "Query response objects with \"hits\" property",
+            "x-JSONLDContext": "https://raw.githubusercontent.com/NCATS-Tangerine/translator-api-registry/master/myvariant.info/jsonld_context/myvariant_query_1.1.json",
+            "x-responseValueType": [
+              {
+                "path": "hits._id",
+                "valueType": "http://identifiers.org/hgvs/"
+              }
+            ]
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            },
+            "description": "A response indicating an improperly formatted query"
+          }
+        },
+        "summary": "Make variant batch query and return matching variant hits",
+        "tags": [
+          "query"
+        ],
+        "x-bte-semanticmapping": {
+          "$ref": "#/components/x-bte-semanticmapping/query-post"
+        }
+      }
+    },
+    "/variant": {
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fields",
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "in": "query",
+            "name": "dotfield"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "in": "query",
+            "name": "email"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "ids": {
+                    "description": "multiple variant ids seperated by comma, e.g., \"ids=chr6:g.152708291G>A,chr1:g.35367G>A\" or \"ids=rs5882,rs12190874\". Note that currently we only take the input ids up to 1000 maximum, the rest will be omitted.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Variant"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "a list of matching variant objects",
+            "x-JSONLDContext": "https://raw.githubusercontent.com/NCATS-Tangerine/translator-api-registry/master/myvariant.info/jsonld_context/myvariant_variant_1.1.json",
+            "x-responseValueType": [
+              {
+                "path": "_id",
+                "valueType": "http://identifiers.org/hgvs/"
+              }
+            ]
+          }
+        },
+        "summary": "For a list of variant ids, return the matching variant objects",
+        "tags": [
+          "variant"
+        ]
+      }
+    },
+    "/variant/{variantid}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "HGVS or rsid, e.g., chr6:g.152708291G>A, rs12190874",
+            "example": "chr6:g.152708291G>A",
+            "in": "path",
+            "name": "variantid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-requestTemplate": [
+              {
+                "template": "/variant/{{input}}",
+                "valueType": "http://identifiers.org/hgvs/"
+              },
+              {
+                "template": "/variant/{{input}}",
+                "valueType": "http://identifiers.org/dbsnp/"
+              }
+            ],
+            "x-valueType": [
+              "http://identifiers.org/hgvs/",
+              "http://identifiers.org/dbsnp/"
+            ]
+          },
+          {
+            "$ref": "#/components/parameters/fields",
+            "in": "query",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "in": "query",
+            "name": "dotfield"
+          },
+          {
+            "$ref": "#/components/parameters/callback",
+            "in": "query",
+            "name": "callback"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "in": "query",
+            "name": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Variant"
+                }
+              }
+            },
+            "description": "A matching variant object",
+            "x-JSONLDContext": "https://raw.githubusercontent.com/NCATS-Tangerine/translator-api-registry/master/myvariant.info/jsonld_context/myvariant_variant_1.1.json",
+            "x-responseValueType": [
+              {
+                "path": "_id",
+                "valueType": "http://identifiers.org/hgvs/"
+              }
+            ]
+          },
+          "404": {
+            "description": "A response indicating an unknown variant id"
+          }
+        },
+        "summary": "Retrieve variant annotation object based on HGVS or rsid, support JSONP and CORS as well.",
+        "tags": [
+          "variant"
+        ]
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "callback": {
+        "description": "you can pass a \"callback\" parameter to make a JSONP call.",
+        "in": "query",
+        "name": "callback",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "dotfield": {
+        "description": "control the format of the returned variant object. If \"true\" or \"1\", all fields will be collapsed into a single level deep structure (all nested objects will be a single level deep, using dotfield notation to signify the nested structure) Default: false.",
+        "in": "query",
+        "name": "dotfield",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "email": {
+        "description": "If you are regular users of our services, we encourage you to provide us an email, so that we can better track the usage or follow up with you.",
+        "in": "query",
+        "name": "email",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "fields": {
+        "description": "a comma-separated fields to limit the fields returned from the matching variant hits. The supported field names can be found from any variant object (e.g. http://myvariant.info/v1/variant/rs12190874). Note that it supports dot notation as well, e.g., you can pass \"dbsnp.rsid\". If \"fields=all\", all available fields will be returned. Default: \"all\".",
+        "in": "query",
+        "name": "fields",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "from": {
+        "description": "the number of matching variant hits to skip, starting from 0. Combining with \"size\" parameter, this can be useful for paging. Default: 0.",
+        "in": "query",
+        "name": "from",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "size": {
+        "description": "the maximum number of matching variant hits to return (with a cap of 1000 at the moment). Default: 10.",
+        "in": "query",
+        "name": "size",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "sort": {
+        "description": "the comma-separated fields to sort on. Prefix with \"-\" for descending order, otherwise in ascending order. Default: sort by matching scores in decending order.",
+        "in": "query",
+        "name": "sort",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResult": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "QueryPOSTResult": {
+        "items": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/Variant"
+            },
+            {
+              "properties": {
+                "_score": {
+                  "format": "float",
+                  "type": "number"
+                },
+                "query": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        },
+        "type": "array"
+      },
+      "QueryResult": {
+        "properties": {
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/Variant"
+            },
+            "type": "array"
+          },
+          "max_score": {
+            "format": "float",
+            "type": "number"
+          },
+          "took": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Variant": {
+        "properties": {
+          "_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id"
+        ],
+        "type": "object"
+      },
+      "int64_or_array": {
+        "oneOf": [
+          {
+            "items": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          {
+            "format": "int64",
+            "type": "integer"
+          }
+        ]
+      },
+      "string_or_array": {
+        "oneOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "x-bte-semanticmapping": {
+      "query-post": {
+        "@context": "http://schema.org",
+        "@type": "SequenceVariant",
+        "bts:dbsnp": "dbsnp.rsid",
+        "bts:clinvar": "clinvar.variant_id",
+        "bts:variantAssociatedWithGene": {
+          "@type": "Gene",
+          "bts:entrez": "dbsnp.gene.geneid",
+          "$input": "bts:dbsnp",
+          "$source": "dbsnp"
+        },
+        "bts:variantAssociatedWithCondition": [
+          {
+            "@type": "DiseaseOrPhenotypicFeature",
+            "bts:omim": "clinvar.rcv.conditions.identifiers.omim",
+            "bts:name": "clinvar.rcv.conditions.name",
+            "bts:clinicalsignificance": "clinvar.rcv.clinical_significance",
+            "$input": "bts:dbsnp",
+            "$source": "clinvar"
+          },
+          {
+            "@type": "DiseaseOrPhenotypicFeature",
+            "bts:orphanet": "clinvar.rcv.conditions.identifiers.orphanet",
+            "bts:name": "clinvar.rcv.conditions.name",
+            "bts:clinicalsignificance": "clinvar.rcv.clinical_significance",
+            "$input": "bts:dbsnp",
+            "$source": "clinvar"
+          }
+        ]
+      }
+    }
+  }
+}
