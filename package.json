@@ -1,0 +1,22 @@
+{
+  "name": "@biothings_explorer/bte_smartapi",
+  "version": "1.0.0",
+  "description": "handle smartapi specs for biothings explorer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinxin90/bte_smartapi.git"
+  },
+  "author": "jiwen xin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinxin90/bte_smartapi/issues"
+  },
+  "homepage": "https://github.com/kevinxin90/bte_smartapi#readme",
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
