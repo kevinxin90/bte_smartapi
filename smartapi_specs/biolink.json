@@ -42,6 +42,9 @@
     },
     {
       "name": "translator"
+    },
+    {
+      "name": "biolink"
     }
   ],
   "paths": {
