@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: help@dgidb.org
+    name: Malachi Griffith
+    x-id: https://github.com/malachig
+    x-role: responsible developer
+  description: Drug gene interaction database
+  termsOfService: http://dgidb.genome.wustl.edu/contact
+  title: DGIdb API
+  version: '2.0'
+servers:
+- description: Production server
+  url: http://dgidb.genome.wustl.edu/api/v2
+tags:
+- name: drug
+- name: gene
+- name: annotation
+- name: translator
+paths:
+  /interactions.json?drugs={drugname}:
+    get:
+      parameters:
+      - description: Put gene names here, e.g. riluzole
+        in: path
+        name: drugname
+        required: true
+        schema:
+          type: string
+        x-requestTemplate:
+        - template: drugs={{input}}
+          valueType: http://identifiers.org/drugname/
+        x-valueType:
+        - http://biothings.io/terms/drugname/
+      responses:
+        '200':
+          description: A query response object with "matchedTerm" property
+      summary: return interactions for a drug with a gene
+      tags: 
+      - drug
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/chemical-gene'
+  /interactions.json?genes={genesymbol}:
+    get:
+      parameters:
+      - description: Put gene names here, e.g. FLT1, CXCR4
+        in: path
+        name: genesymbol
+        required: true
+        schema:
+          type: string
+        x-requestTemplate:
+        - template: genes={{input}}
+          valueType: http://identifiers.org/hgnc.symbol/
+        x-valueType:
+        - http://identifiers.org/hgnc.symbol/
+      responses:
+        '200':
+          description: A query response object with "matchedTerm" property
+      summary: return interactions for a gene with a drug
+      tags: 
+      - gene
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/gene-chemical'
+components:
+  x-bte-semanticmapping:
+    gene-chemical:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:entrez: matchedTerms.entrezId
+      bts:symbol: matchedTerms.geneName
+      bts:name: matchedTerms.geneLongName
+      bts:targetedBy:
+        "@type": ChemicalSubstance
+        bts:chembl: matchedTerms.interactions.drugChemblId
+        bts:name: matchedTerms.interactions.drugName
+        bts:source: matchedTerms.interactions.sources
+        bts:publication: matchedTerms.interactions.pmids
+        "$input": bts:symbol
+        "$source": dgidb
+    chemical-gene:
+      "@context": http://schema.org
+      "@type": ChemicalSubstance
+      bts:chembl: matchedTerms.chemblId
+      bts:name: matchedTerms.drugName
+      bts:target:
+        "@type": Gene
+        bts:entrez: matchedTerms.interactions.geneEntrezId
+        bts:name: matchedTerms.interactions.geneLongName
+        bts:source: matchedTerms.interactions.sources
+        bts:publication: matchedTerms.interactions.pmids
+        "$input": bts:chembl
+        "$source": dgidb
