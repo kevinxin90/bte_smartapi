@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: luzh@ncbi.nlm.nih.gov
+    name: Zhiyong Lu
+  description: LitVar allows the search and retrieval of variant relevant information from the biomedical literature and shows key biological relations between a variant and its close related entities
+  termsOfService: https://www.ncbi.nlm.nih.gov/home/about/policies/
+  title: LitVar API
+  version: '1.0'
+servers:
+- description: Production server
+  url: https://www.ncbi.nlm.nih.gov/research/bionlp/litvar/api/v1
+tags:
+- name: sequenceVariant
+- name: annotation
+- name: translator
+paths:
+  /entity/litvar/{dbsnp}##:
+    get:
+      parameters:
+      - description: Put dbsnp ID here
+        in: path
+        name: dbsnp
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A query response object with "results" property
+      summary: Retrieve information about a variant given its VarID.
+      tags: 
+      - sequenceVariant
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/litvar-dbsnp'
+components:
+  x-bte-semanticmapping:
+    litvar-dbsnp:
+      "@context": http://schema.org
+      "@type": SequenceVariant
+      bts:dbsnp: rsid
+      bts:name: rsid
+      bts:variantAssociatedWithGene:
+        "@type": Gene
+        bts:symbol: gene.name
+        "$input": bts:dbsnp
+        "$source": litvar
