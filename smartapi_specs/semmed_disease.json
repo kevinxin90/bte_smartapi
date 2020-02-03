@@ -1,0 +1,594 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "help@biothings.io",
+      "name": "Chunlei Wu",
+      "x-id": "https://github.com/newgene",
+      "x-role": "responsible developer"
+    },
+    "description": "Documentation of the SEMMED query web services with a specific focus on Disease related data.",
+    "termsOfService": "https://biothings.io/terms",
+    "title": "semmed API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "description": "Production server",
+      "url": "http://pending.biothings.io/semmed"
+    },
+    {
+      "description": "Encrypted Production server",
+      "url": "https://pending.biothings.io/semmed"
+    }
+  ],
+  "tags": [
+    {
+      "name": "disease"
+    },
+    {
+      "name": "query"
+    },
+    {
+      "name": "metadata"
+    },
+    {
+      "name": "biothings"
+    }
+  ],
+  "paths": {
+    "/query": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Query string.  The detailed query syntax can be found from our [docs]",
+            "example": "",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/fields",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/size",
+            "name": "size"
+          },
+          {
+            "$ref": "#/components/parameters/callback",
+            "name": "callback"
+          },
+          {
+            "$ref": "#/components/parameters/format",
+            "name": "format"
+          },
+          {
+            "$ref": "#/components/parameters/facets",
+            "name": "facets"
+          },
+          {
+            "$ref": "#/components/parameters/from",
+            "name": "from"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "name": "email"
+          },
+          {
+            "$ref": "#/components/parameters/sort",
+            "name": "sort"
+          },
+          {
+            "$ref": "#/components/parameters/facet_size",
+            "name": "facet_size"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "name": "dotfield"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResult"
+                }
+              }
+            },
+            "description": "A query response with the \"hits\" property"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            },
+            "description": "A response indicating an improperly formatted query"
+          }
+        },
+        "summary": "Make disease queries and return matching disease hits. Supports JSONP and CORS as well.",
+        "tags": [
+          "query"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fields",
+            "name": "fields"
+          },
+          {
+            "$ref": "#/components/parameters/size",
+            "name": "size"
+          },
+          {
+            "$ref": "#/components/parameters/format",
+            "name": "format"
+          },
+          {
+            "$ref": "#/components/parameters/email",
+            "name": "email"
+          },
+          {
+            "$ref": "#/components/parameters/dotfield",
+            "name": "dotfield"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "q": {
+                    "description": "multiple query terms separated by comma (also \"+\" or whitespace).  Does not support wildcard queries",
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "description": "a comma-separated list of fields as the search \"scopes\" (fields to search through for query term). The available \"fields\" that can be passed to the \"scopes\" parameter are listed in the **/metadata/fields** endpoint.string Default: \"scopes=_id\".",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryPOSTResult"
+                }
+              }
+            },
+            "description": "Query response objects with the \"hits\" property"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResult"
+                }
+              }
+            },
+            "description": "A response indicating an improperly formatted query"
+          }
+        },
+        "summary": "Make disease batch queries and return matching disease hits",
+        "tags": [
+          "query"
+        ],
+        "x-bte-semanticmapping": {
+          "$ref": "#/components/x-bte-semanticmapping/query-post"
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "callback": {
+        "description": "you can pass a \"callback\" parameter to make a JSONP call. Type: string.",
+        "in": "query",
+        "name": "callback",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "dotfield": {
+        "description": "control the format of the returned disease object. If \"true\" or \"1\", all fields will be collapsed into a single level deep object (all nested objects will be a single level deep, using dotfield notation to signify the nested structure) Type: boolean. Default: None.",
+        "in": "query",
+        "name": "dotfield",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "email": {
+        "description": "If you are regular users of our services, we encourage you to provide us with an email, so that we can better track the usage or follow up with you.",
+        "in": "query",
+        "name": "email",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "facet_size": {
+        "description": "the number of facet buckets to return in the response. Type: integer. Default: 10. Max: 1000.",
+        "in": "query",
+        "name": "facet_size",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "facets": {
+        "description": "a comma-separated list of fields to return facets on.  In addition to query hits, the fields notated in \"facets\" will be aggregated by value and bucklet counts will be displayed in the \"facets\" field of the response object. Type: string (list). Default: None. Max: 1000.",
+        "in": "query",
+        "name": "facets",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "fields": {
+        "description": "a comma-separated list of fields (in dotfield notation) used to limit the fields returned from the matching disease hit(s). The supported field names can be found from any disease object or from the /metadata/fields endpoint. If \"fields=all\", all available fields will be returned. Type: string (list). Default: None. Max: 1000.",
+        "in": "query",
+        "name": "fields",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "format": {
+        "description": "controls output format of server response, currently supports: \"json\", \"jsonld\", \"html\". Type: string. Default: json.",
+        "in": "query",
+        "name": "format",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "from": {
+        "description": "the number of matching disease hits to skip, starting from 0.  This can be useful for paging in combination with the \"size\" parameter. Type: integer. Default: None.",
+        "in": "query",
+        "name": "from",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "prefix": {
+        "description": "Pass a prefix string to filter the available fields. Type: string. Default: None.",
+        "in": "query",
+        "name": "prefix",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "search": {
+        "description": "Pass a search term to filter the available fields. Type: string. Default: None.",
+        "in": "query",
+        "name": "search",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "size": {
+        "description": "the maximum number of matching disease hits to return per batch. Type: integer. Default: None.",
+        "in": "query",
+        "name": "size",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "sort": {
+        "description": "the comma-separated list of fields to sort on. Prefix each with \"-\" for descending order, otherwise in ascending order. Default: sort by descending score.",
+        "in": "query",
+        "name": "sort",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Disease": {
+        "properties": {
+          "_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id"
+        ],
+        "type": "object"
+      },
+      "ErrorResult": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "QueryPOSTResult": {
+        "items": {
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/Disease"
+            },
+            {
+              "properties": {
+                "_score": {
+                  "format": "float",
+                  "type": "number"
+                },
+                "query": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        },
+        "type": "array"
+      },
+      "QueryResult": {
+        "properties": {
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/Disease"
+            },
+            "type": "array"
+          },
+          "max_score": {
+            "format": "float",
+            "type": "number"
+          },
+          "took": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "int64_or_array": {
+        "oneOf": [
+          {
+            "items": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          {
+            "format": "int64",
+            "type": "integer"
+          }
+        ]
+      },
+      "string_or_array": {
+        "oneOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "x-bte-semanticmapping": {
+      "query-post": {
+        "@context": "http://schema.org",
+        "@type": "DiseaseOrPhenotypicFeature",
+        "bts:umls": "umls",
+        "bts:treatedBy": {
+          "@type": "ChemicalSubstance",
+          "bts:umls": "TREATS_reverse.chemical_substance.umls",
+          "bts:pubmed": "TREATS_reverse.chemical_substance.pmid",
+          "$input": "bts:umls",
+          "$source": "semmed"
+        },
+        "bts:causedBy": {
+          "@type": "Gene",
+          "bts:umls": "CAUSES_reverse.gene.umls",
+          "bts:pubmed": "CAUSES_reverse.gene.pmid",
+          "$input": "bts:umls",
+          "$source": "semmed"
+        },
+        "bts:associatedWith": [
+          {
+            "@type": "AnatomicalEntity",
+            "bts:umls": "AFFECTS.anatomical_entity.umls",
+            "bts:pubmed": "AFFECTS.anatomical_entity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "AnatomicalEntity",
+            "bts:umls": "AFFECTS_reverse.anatomical_entity.umls",
+            "bts:pubmed": "AFFECTS_reverse.anatomical_entity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "AnatomicalEntity",
+            "bts:umls": "ASSOCIATED_WITH.anatomical_entity.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.anatomical_entity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "AnatomicalEntity",
+            "bts:umls": "ASSOCIATED_WITH_reverse.anatomical_entity.umls",
+            "bts:pubmed": "ASSOCIATED_WITH_reverse.anatomical_entity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "BiologicalProcess",
+            "bts:umls": "AFFECTS.biological_process_or_activity.umls",
+            "bts:pubmed": "AFFECTS.biological_process_or_activity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "BiologicalProcess",
+            "bts:umls": "ASSOCIATED_WITH.biological_process_or_activity.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.biological_process_or_activity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "BiologicalProcess",
+            "bts:umls": "ASSOCIATED_WITH_reverse.biological_process_or_activity.umls",
+            "bts:pubmed": "ASSOCIATED_WITH_reverse.biological_process_or_activity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "BiologicalProcess",
+            "bts:umls": "AFFECTS_reverse.biological_process_or_activity.umls",
+            "bts:pubmed": "AFFECTS_reverse.biological_process_or_activity.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Cell",
+            "bts:umls": "AFFECTS.cell.umls",
+            "bts:pubmed": "AFFECTS.cell.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Cell",
+            "bts:umls": "AFFECTS_reverse.cell.umls",
+            "bts:pubmed": "AFFECTS_reverse.cell.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Cell",
+            "bts:umls": "ASSOCIATED_WITH.cell.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.cell.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "CellularComponent",
+            "bts:umls": "AFFECTS.cell_component.umls",
+            "bts:pubmed": "AFFECTS.cell_component.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "CellularComponent",
+            "bts:umls": "AFFECTS_reverse.cell_component.umls",
+            "bts:pubmed": "AFFECTS_reverse.cell_component.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "ChemicalSubstance",
+            "bts:umls": "AFFECTS.chemical_substance.umls",
+            "bts:pubmed": "AFFECTS.chemical_substance.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "ChemicalSubstance",
+            "bts:umls": "AFFECTS_reverse.chemical_substance.umls",
+            "bts:pubmed": "AFFECTS_reverse.chemical_substance.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "ChemicalSubstance",
+            "bts:umls": "ASSOCIATED_WITH.chemical_substance.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.chemical_substance.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "ChemicalSubstance",
+            "bts:umls": "ASSOCIATED_WITH_reverse.chemical_substance.umls",
+            "bts:pubmed": "ASSOCIATED_WITH_reverse.chemical_substance.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Gene",
+            "bts:umls": "AFFECTS.gene.umls",
+            "bts:pubmed": "AFFECTS.gene.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Gene",
+            "bts:umls": "AFFECTS_reverse.gene.umls",
+            "bts:pubmed": "AFFECTS_reverse.gene.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Gene",
+            "bts:umls": "AFFECTS.protein.umls",
+            "bts:pubmed": "AFFECTS.protein.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Gene",
+            "bts:umls": "AFFECTS_reverse.protein.umls",
+            "bts:pubmed": "AFFECTS_reverse.protein.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Gene",
+            "bts:umls": "ASSOCIATED_WITH.gene.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.gene.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "Disease",
+            "bts:umls": "AFFECTS.disease_or_phenotypic_feature.umls",
+            "bts:pubmed": "AFFECTS.disease_or_phenotypic_feature.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "PhenotypicFeature",
+            "bts:umls": "AFFECTS.phenotypic_feature.umls",
+            "bts:pubmed": "AFFECTS.phenotypic_feature.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "PhenotypicFeature",
+            "bts:umls": "AFFECTS_reverse.phenotypic_feature.umls",
+            "bts:pubmed": "AFFECTS_reverse.phenotypic_feature.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          },
+          {
+            "@type": "PhenotypicFeature",
+            "bts:umls": "ASSOCIATED_WITH.phenotypic_feature.umls",
+            "bts:pubmed": "ASSOCIATED_WITH.phenotypic_feature.pmid",
+            "$input": "bts:umls",
+            "$source": "semmed"
+          }
+        ]
+      }
+    }
+  }
+}

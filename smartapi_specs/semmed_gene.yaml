@@ -1,0 +1,520 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: help@biothings.io
+    name: Chunlei Wu
+    x-id: https://github.com/newgene
+    x-role: responsible developer
+  description: Documentation of the SEMMED query web services with a specific focus on Gene related data.
+  termsOfService: https://biothings.io/terms
+  title: semmed API
+  version: '1.0'
+servers:
+- description: Production server
+  url: http://pending.biothings.io/semmedgene
+- description: Encrypted Production server
+  url: https://pending.biothings.io/semmedgene
+tags:
+- name: gene
+- name: query
+- name: metadata
+- name: biothings
+paths:
+  /query:
+    get:
+      parameters:
+      - description: Query string.  The detailed query syntax can be found from our
+          [docs]
+        example: ''
+        in: query
+        name: q
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/fields'
+        name: fields
+      - $ref: '#/components/parameters/size'
+        name: size
+      - $ref: '#/components/parameters/callback'
+        name: callback
+      - $ref: '#/components/parameters/format'
+        name: format
+      - $ref: '#/components/parameters/facets'
+        name: facets
+      - $ref: '#/components/parameters/from'
+        name: from
+      - $ref: '#/components/parameters/email'
+        name: email
+      - $ref: '#/components/parameters/sort'
+        name: sort
+      - $ref: '#/components/parameters/facet_size'
+        name: facet_size
+      - $ref: '#/components/parameters/dotfield'
+        name: dotfield
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResult'
+          description: A query response with the "hits" property
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: A response indicating an improperly formatted query
+      summary: Make disease queries and return matching disease hits. Supports JSONP
+        and CORS as well.
+      tags:
+      - query
+    post:
+      parameters:
+      - $ref: '#/components/parameters/fields'
+        name: fields
+      - $ref: '#/components/parameters/size'
+        name: size
+      - $ref: '#/components/parameters/format'
+        name: format
+      - $ref: '#/components/parameters/email'
+        name: email
+      - $ref: '#/components/parameters/dotfield'
+        name: dotfield
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                q:
+                  description: multiple query terms separated by comma (also "+" or
+                    whitespace).  Does not support wildcard queries
+                  type: string
+                scopes:
+                  description: 'a comma-separated list of fields as the search "scopes"
+                    (fields to search through for query term). The available "fields"
+                    that can be passed to the "scopes" parameter are listed in the
+                    **/metadata/fields** endpoint.string Default: "scopes=_id".'
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryPOSTResult'
+          description: Query response objects with the "hits" property
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: A response indicating an improperly formatted query
+      summary: Make disease batch queries and return matching disease hits
+      tags:
+      - query
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/query-post'
+components:
+  parameters:
+    callback:
+      description: 'you can pass a "callback" parameter to make a JSONP call. Type:
+        string.'
+      in: query
+      name: callback
+      schema:
+        type: string
+    dotfield:
+      description: 'control the format of the returned disease object. If "true" or
+        "1", all fields will be collapsed into a single level deep object (all nested
+        objects will be a single level deep, using dotfield notation to signify the
+        nested structure) Type: boolean. Default: None.'
+      in: query
+      name: dotfield
+      schema:
+        type: boolean
+    email:
+      description: If you are regular users of our services, we encourage you to provide
+        us with an email, so that we can better track the usage or follow up with
+        you.
+      in: query
+      name: email
+      schema:
+        type: string
+    facet_size:
+      description: 'the number of facet buckets to return in the response. Type: integer.
+        Default: 10. Max: 1000.'
+      in: query
+      name: facet_size
+      schema:
+        type: integer
+    facets:
+      description: 'a comma-separated list of fields to return facets on.  In addition
+        to query hits, the fields notated in "facets" will be aggregated by value
+        and bucklet counts will be displayed in the "facets" field of the response
+        object. Type: string (list). Default: None. Max: 1000.'
+      in: query
+      name: facets
+      schema:
+        type: string
+    fields:
+      description: 'a comma-separated list of fields (in dotfield notation) used to
+        limit the fields returned from the matching disease hit(s). The supported
+        field names can be found from any disease object or from the /metadata/fields
+        endpoint. If "fields=all", all available fields will be returned. Type: string
+        (list). Default: None. Max: 1000.'
+      in: query
+      name: fields
+      schema:
+        type: string
+    format:
+      description: 'controls output format of server response, currently supports:
+        "json", "jsonld", "html". Type: string. Default: json.'
+      in: query
+      name: format
+      schema:
+        type: string
+    from:
+      description: 'the number of matching disease hits to skip, starting from 0.  This
+        can be useful for paging in combination with the "size" parameter. Type: integer.
+        Default: None.'
+      in: query
+      name: from
+      schema:
+        type: integer
+    prefix:
+      description: 'Pass a prefix string to filter the available fields. Type: string.
+        Default: None.'
+      in: query
+      name: prefix
+      schema:
+        type: string
+    search:
+      description: 'Pass a search term to filter the available fields. Type: string.
+        Default: None.'
+      in: query
+      name: search
+      schema:
+        type: string
+    size:
+      description: 'the maximum number of matching disease hits to return per batch.
+        Type: integer. Default: None.'
+      in: query
+      name: size
+      schema:
+        type: integer
+    sort:
+      description: 'the comma-separated list of fields to sort on. Prefix each with
+        "-" for descending order, otherwise in ascending order. Default: sort by descending
+        score.'
+      in: query
+      name: sort
+      schema:
+        type: string
+  schemas:
+    Disease:
+      properties:
+        _id:
+          type: string
+      required:
+      - _id
+      type: object
+    ErrorResult:
+      properties:
+        message:
+          type: string
+        success:
+          type: boolean
+      type: object
+    QueryPOSTResult:
+      items:
+        allOf:
+        - $ref: '#/components/schemas/Disease'
+        - properties:
+            _score:
+              format: float
+              type: number
+            query:
+              type: string
+          type: object
+      type: array
+    QueryResult:
+      properties:
+        hits:
+          items:
+            $ref: '#/components/schemas/Disease'
+          type: array
+        max_score:
+          format: float
+          type: number
+        took:
+          type: integer
+        total:
+          type: integer
+      type: object
+    int64_or_array:
+      oneOf:
+      - items:
+          format: int64
+          type: integer
+        type: array
+      - format: int64
+        type: integer
+    string_or_array:
+      oneOf:
+      - items:
+          type: string
+        type: array
+      - type: string
+  x-bte-semanticmapping:
+    query-post:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:umls: umls
+      bts:molecularlyInteractsWith:
+      - "@type": ChemicalSubstance
+        bts:umls: interacts_with.chemical_substance.umls
+        bts:pubmed: interacts_with.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": ChemicalSubstance
+        bts:umls: interacts_with_reverse.chemical_substance.umls
+        bts:pubmed: interacts_with_reverse.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: interacts_with.biological_process_or_activity.umls
+        bts:pubmed: interacts_with.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: interacts_with_reverse.biological_process_or_activity.umls
+        bts:pubmed: interacts_with_reverse.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: interacts_with.cell.umls
+        bts:pubmed: interacts_with.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: interacts_with_reverse.cell.umls
+        bts:pubmed: interacts_with_reverse.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: interacts_with.cell_component.umls
+        bts:pubmed: interacts_with.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: interacts_with_reverse.cell_component.umls
+        bts:pubmed: interacts_with_reverse.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: interacts_with.gene.umls
+        bts:pubmed: interacts_with.gene.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: interacts_with.protein.umls
+        bts:pubmed: interacts_with.protein.pmid
+        "$input": bts:umls
+        "$source": semmed
+      bts:increasesActivityOf:
+      - "@type": BiologicalProcess
+        bts:umls: stimulates.biological_process_or_activity.umls
+        bts:pubmed: stimulates.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": AnatomicalEntity
+        bts:umls: stimulates.anatomical_entity.umls
+        bts:pubmed: stimulates.anatomical_entity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: stimulates.cell.umls
+        bts:pubmed: stimulates.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: stimulates.cell_component.umls
+        bts:pubmed: stimulates.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": PhenotypicFeature
+        bts:umls: stimulates.phenotypic_feature.umls
+        bts:pubmed: stimulates.phenotypic_feature.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: stimulates.protein.umls
+        bts:pubmed: stimulates.protein.pmid
+        "$input": bts:umls
+        "$source": semmed
+      bts:decreasesActivityOf:
+      - "@type": BiologicalProcess
+        bts:umls: inhibits.biological_process_or_activity.umls
+        bts:pubmed: inhibits.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: disrupts.biological_process_or_activity.umls
+        bts:pubmed: disrupts.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: disrupts.cell.umls
+        bts:pubmed: disrupts.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: inhibits.cell_component.umls
+        bts:pubmed: inhibits.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: disrupts.cell_component.umls
+        bts:pubmed: disrupts.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: inhibits.gene.umls
+        bts:pubmed: inhibits.gene.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: disrupts.gene.umls
+        bts:pubmed: disrupts.gene.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: inhibits.protein.umls
+        bts:pubmed: inhibits.protein.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: disrupts.protein.umls
+        bts:pubmed: disrupts.protein.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": PhenotypicFeature
+        bts:umls: inhibits.phenotypic_feature.umls
+        bts:pubmed: inhibits.phenotypic_feature.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": PhenotypicFeature
+        bts:umls: disrupts.phenotypic_feature.umls
+        bts:pubmed: disrupts.phenotypic_feature.pmid
+        "$input": bts:umls
+        "$source": semmed
+      bts:associatedWith:
+      - "@type": AnatomicalEntity
+        bts:umls: affects.anatomical_entity.umls
+        bts:pubmed: affects.anatomical_entity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": AnatomicalEntity
+        bts:umls: associated_with.anatomical_entity.umls
+        bts:pubmed: associated_with.anatomical_entity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": AnatomicalEntity
+        bts:umls: associated_with_reverse.anatomical_entity.umls
+        bts:pubmed: associated_with_reverse.anatomical_entity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: affects.biological_process_or_activity.umls
+        bts:pubmed: affects.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: associated_with.biological_process_or_activity.umls
+        bts:pubmed: associated_with.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: associated_with_reverse.biological_process_or_activity.umls
+        bts:pubmed: associated_with_reverse.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": BiologicalProcess
+        bts:umls: affects_reverse.biological_process_or_activity.umls
+        bts:pubmed: affects_reverse.biological_process_or_activity.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: affects.cell_component.umls
+        bts:pubmed: affects.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": CellularComponent
+        bts:umls: affects_reverse.cell_component.umls
+        bts:pubmed: affects_reverse.cell_component.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": ChemicalSubstance
+        bts:umls: affects.chemical_substance.umls
+        bts:pubmed: affects.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": ChemicalSubstance
+        bts:umls: affects_reverse.chemical_substance.umls
+        bts:pubmed: affects_reverse.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": ChemicalSubstance
+        bts:umls: associated_with.chemical_substance.umls
+        bts:pubmed: associated_with.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": ChemicalSubstance
+        bts:umls: associated_with_reverse.chemical_substance.umls
+        bts:pubmed: associated_with_reverse.chemical_substance.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: affects.gene.umls
+        bts:pubmed: affects.gene.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: affects.protein.umls
+        bts:pubmed: affects.protein.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Gene
+        bts:umls: associated_with.gene.umls
+        bts:pubmed: associated_with.gene.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": PhenotypicFeature
+        bts:umls: affects.phenotypic_feature.umls
+        bts:pubmed: affects.phenotypic_feature.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": PhenotypicFeature
+        bts:umls: associated_with.phenotypic_feature.umls
+        bts:pubmed: associated_with.phenotypic_feature.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: affects.cell.umls
+        bts:pubmed: affects.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: affects_reverse.cell.umls
+        bts:pubmed: affects_reverse.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: associated_with.cell.umls
+        bts:pubmed: associated_with.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
+      - "@type": Cell
+        bts:umls: affects_reverse.cell.umls
+        bts:pubmed: affects_reverse.cell.pmid
+        "$input": bts:umls
+        "$source": semmed
