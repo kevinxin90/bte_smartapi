@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: cjm@berkeleybop.org
+    name: Chris Mungall
+    x-id: https://github.com/cmungall
+    x-role: responsible developer
+  description: API integration layer for linked biological objects.
+  termsOfService: https://github.com/monarch-initiative/biolink-api/
+  title: BioLink API
+  version: 0.1.1
+servers:
+- description: Production server
+  url: https://api.monarchinitiative.org/api
+tags:
+- name: anatomy
+- name: disease
+- name: gene
+- name: phenotype
+- name: pathway
+- name: annotation
+- name: query
+- name: translator
+paths:
+  /bioentity/anatomy/{anatomy_id}/genes:
+    get:
+      parameters:
+      - description: CURIE identifier of anatomy
+          IDs can be used with same results
+        in: path
+        name: anatomy_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns genes associated with an anatomy
+      tags:
+        - anatomy
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/anatomy-gene'
+  /bioentity/disease/{disease_id}/genes:
+    get:
+      parameters:
+      - description: CURIE identifier of disease
+          IDs can be used with same results
+        in: path
+        name: disease_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns genes associated with a disease
+      tags:
+        - disease
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/disease-gene'
+  /bioentity/disease/{disease_id}/pathways:
+    get:
+      parameters:
+      - description: CURIE identifier of disease
+          IDs can be used with same results
+        in: path
+        name: disease_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns pathways associated with a disease
+      tags:
+        - disease
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/disease-pathway'
+  /bioentity/disease/{disease_id}/phenotypes:
+    get:
+      parameters:
+      - description: CURIE identifier of disease
+          IDs can be used with same results
+        in: path
+        name: disease_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns phenotypes associated with a disease
+      tags:
+        - disease
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/disease-phenotype'
+  /bioentity/gene/NCBIGene:{gene_id}/anatomy:
+    get:
+      parameters:
+      - description: CURIE identifier of gene
+          IDs can be used with same results
+        in: path
+        name: gene_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns anatomies associated with a gene
+      tags:
+        - gene
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/gene-anatomy'
+  /bioentity/gene/NCBIGene:{gene_id}/diseases:
+    get:
+      parameters:
+      - description: CURIE identifier of gene
+          IDs can be used with same results
+        in: path
+        name: gene_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns diseases associated with a gene
+      tags:
+        - gene
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/gene-disease'
+  /bioentity/gene/NCBIGene:{gene_id}/interactions:
+    get:
+      parameters:
+      - description: CURIE identifier of gene
+          IDs can be used with same results
+        in: path
+        name: gene_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns gene interaction
+      tags:
+        - gene
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/gene-interaction'
+  /bioentity/gene/NCBIGene:{gene_id}/phenotypes:
+    get:
+      parameters:
+      - description: CURIE identifier of gene
+          IDs can be used with same results
+        in: path
+        name: gene_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns phenotypes associated with a gene
+      tags:
+        - gene
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/gene-phenotype'
+  /bioentity/pathway/REACT:{pathway_id}/diseases:
+    get:
+      parameters:
+      - description: CURIE identifier of reactome pathway
+          IDs can be used with same results
+        in: path
+        name: pathway_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns diseases associated with a pathway
+      tags:
+        - pathway
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/pathway-disease'
+  /bioentity/pathway/REACT:{pathway_id}/phenotypes:
+    get:
+      parameters:
+      - description: CURIE identifier of reactome pathway
+          IDs can be used with same results
+        in: path
+        name: pathway_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns phenotypes associated with a pathway
+      tags:
+        - pathway
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/pathway-phenotype'
+  /bioentity/phenotype/{phenotype_id}/genes:
+    get:
+      parameters:
+      - description: CURIE identifier of phenotype
+          IDs can be used with same results
+        in: path
+        name: phenotype_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns genes associated with a phenotype
+      tags:
+        - phenotype
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/phenotype-gene'
+  /bioentity/phenotype/{phenotype_id}/pathways:
+    get:
+      parameters:
+      - description: CURIE identifier of phenotype
+          IDs can be used with same results
+        in: path
+        name: phenotype_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns pathways associated with a phenotype
+      tags:
+        - phenotype
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/phenotype-pathway'
+  /bioentity/phenotype/{phenotype_id}/diseases:
+    get:
+      parameters:
+      - description: CURIE identifier of phenotype
+          IDs can be used with same results
+        in: path
+        name: phenotype_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A distinct set of association.objects (typically ontology terms).
+            This appears at the top level of the results payload
+      summary: Returns diseases associated with a phenotype
+      tags:
+        - phenotype
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/phenotype-disease'
+components:
+  x-bte-semanticmapping:
+    anatomy-gene:
+      "@context": http://schema.org
+      "@type": AnatomicalEntity
+      bts:uberon: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": Gene
+        bts:hgnc: associations.object.HGNC
+        bts:entrez: associations.object.NCBIGene
+        bts:mgi: associations.object.MGI
+        bts:zfin: associations.object.ZFIN
+        bts:flybase: associations.object.FlyBase
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:uberon
+        "$source": biolink
+    disease-gene:
+      "@context": http://schema.org
+      "@type": DiseaseOrPhenotypicFeature
+      bts:mondo: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": Gene
+        bts:hgnc: associations.object.HGNC
+        bts:entrez: associations.object.NCBIGene
+        bts:mgi: associations.object.MGI
+        bts:zfin: associations.object.ZFIN
+        bts:flybase: associations.object.FlyBase
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        bts:taxid: associations.object.taxon.id
+        "$input": bts:mondo
+        "$source": biolink
+    disease-pathway:
+      "@context": http://schema.org
+      "@type": DiseaseOrPhenotypicFeature
+      bts:mondo: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": Pathway
+        bts:reactome: associations.object.REACT
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:mondo
+        "$source": biolink
+    disease-phenotype:
+      "@context": http://schema.org
+      "@type": DiseaseOrPhenotypicFeature
+      bts:mondo: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": PhenotypicFeature
+        bts:hp: associations.object.HP
+        bts:efo: associations.object.EFO
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:pubmed: associations.publications.id
+        bts:relation: associations.relation.label
+        "$input": bts:mondo
+        "$source": biolink
+    gene-anatomy:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:entrez: associations.subject.id
+      bts:symbol: associations.subject.label
+      bts:associatedWith:
+        "@type": AnatomicalEntity
+        bts:uberon: associations.object.UBERON
+        bts:cl: associations.object.CL
+        bts:fbbt: associations.object.FBbt
+        bts:source: associations.provided_by
+        bts:pubmed: associations.publications.id
+        bts:relation: associations.relation.label
+        "$input": bts:entrez
+        "$source": biolink
+    gene-disease:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:entrez: associations.subject.id
+      bts:symbol: associations.subject.label
+      bts:associatedWith:
+        "@type": DiseaseOrPhenotypicFeature
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:entrez
+        "$source": biolink
+    gene-phenotype:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:entrez: associations.subject.id
+      bts:symbol: associations.subject.label
+      bts:associatedWith:
+        "@type": PhenotypicFeature
+        bts:hp: associations.object.HP
+        bts:efo: associations.object.EFO
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:pubmed: associations.publications.id
+        bts:relation: associations.relation.label
+        "$input": bts:entrez
+        "$source": biolink
+    gene-interaction:
+      "@context": http://schema.org
+      "@type": Gene
+      bts:entrez: associations.subject.id
+      bts:symbol: associations.subject.label
+      bts:molecularlyInteractsWith:
+        "@type": Gene
+        bts:hgnc: associations.object.HGNC
+        bts:entrez: associations.object.NCBIGene
+        bts:mgi: associations.object.MGI
+        bts:zfin: associations.object.ZFIN
+        bts:flybase: associations.object.FlyBase
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        bts:taxid: associations.object.taxon.id
+        "$input": bts:entrez
+        "$source": biolink
+    pathway-disease:
+      "@context": http://schema.org
+      "@type": Pathway
+      bts:reactome: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": DiseaseOrPhenotypicFeature
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:reactome
+        "$source": biolink
+    pathway-phenotype:
+      "@context": http://schema.org
+      "@type": Pathway
+      bts:reactome: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": PhenotypicFeature
+        bts:hp: associations.object.HP
+        bts:efo: associations.object.EFO
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:pubmed: associations.publications.id
+        bts:relation: associations.relation.label
+        "$input": bts:reactome
+        "$source": biolink
+    phenotype-disease:
+      "@context": http://schema.org
+      "@type": PhenotypicFeature
+      bts:hp: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": DiseaseOrPhenotypicFeature
+        bts:mondo: associations.object.MONDO
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:hp
+        "$source": biolink
+    phenotype-gene:
+      "@context": http://schema.org
+      "@type": PhenotypicFeature
+      bts:hp: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": Gene
+        bts:hgnc: associations.object.HGNC
+        bts:entrez: associations.object.NCBIGene
+        bts:mgi: associations.object.MGI
+        bts:zfin: associations.object.ZFIN
+        bts:flybase: associations.object.FlyBase
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:hp
+        "$source": biolink
+    phenotype-pathway:
+      "@context": http://schema.org
+      "@type": PhenotypicFeature
+      bts:hp: associations.subject.id
+      bts:name: associations.subject.label
+      bts:associatedWith:
+        "@type": Pathway
+        bts:reactome: associations.object.REACT
+        bts:name: associations.object.label
+        bts:source: associations.provided_by
+        bts:relation: associations.relation.label
+        bts:pubmed: associations.publications.id
+        "$input": bts:hp
+        "$source": biolink
+
+
+    
+
