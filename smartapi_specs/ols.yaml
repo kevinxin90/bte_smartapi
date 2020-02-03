@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: ols-submission@ebi.ac.uk
+    name: ols
+  description: The Ontology Lookup Service (OLS) is a repository for biomedical ontologies that aims to provide a single point of access to the latest ontology versions
+  termsOfService: http://www.ebi.ac.uk/about/terms-of-use
+  title: OLS API
+  version: '1.0'
+servers:
+- description: Production server
+  url: http://www.ebi.ac.uk/ols/api
+tags:
+- name: ontology
+- name: annotation
+- name: translator
+paths:
+  /ontologies/doid/children:
+    get:
+      parameters:
+      - description: Put disease ontology ID here
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+        x-valueType:
+        - doid
+      responses:
+        '200':
+          description: A query response object with "results" property
+      summary: Retrieve information about the children of a doid.
+      tags: 
+      - ontology
+      x-bte-semanticmapping:
+        $ref: '#/components/x-bte-semanticmapping/doid-children'
+components:
+  x-bte-semanticmapping:
+    doid-children:
+      "@context": http://schema.org
+      "@type": DiseaseOrPhenotypicFeature
+      bts:doid: results.id
+      bts:hasChildren:
+        "@type": DiseaseOrPhenotypicFeature
+        bts:doid: _embedded.terms.obo_id
+        bts:name: _embedded.terms.label
+        bts:description: _embedded.terms.description
+        "$input": bts:doid
+        "$source": disease ontology
