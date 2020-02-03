@@ -1,0 +1,77 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "goa@ebi.ac.uk",
+      "name": "EMBL-EBI"
+    },
+    "description": "The QuickGO REST API provides access to key biological data from QuickGO and GOA.",
+    "termsOfService": "https://www.ebi.ac.uk/about/terms-of-use/",
+    "title": "QuickGO API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "description": "Production server",
+      "url": "https://www.ebi.ac.uk/QuickGO/services"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ontology"
+    },
+    {
+      "name": "annotation"
+    },
+    {
+      "name": "translator"
+    }
+  ],
+  "paths": {
+    "/ontology/go/terms/{goterm}/children": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Put go term here, e.g. GO:00012345",
+            "in": "path",
+            "name": "goterm",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A query response object with \"results\" property"
+          }
+        },
+        "summary": "Retrieves the children of specified ontology terms",
+        "tags": [
+          "ontology"
+        ],
+        "x-bte-semanticmapping": {
+          "$ref": "#/components/x-bte-semanticmapping/go-children"
+        }
+      }
+    }
+  },
+  "components": {
+    "x-bte-semanticmapping": {
+      "go-children": {
+        "@context": "http://schema.org",
+        "@type": "MolecularActivity",
+        "bts:go": "results.id",
+        "bts:name": "results.name",
+        "bts:hasChildren": {
+          "@type": "MolecularActivity",
+          "bts:go": "results.children.id",
+          "bts:name": "results.children.name",
+          "bts:relation": "results.children.relation",
+          "$input": "bts:go",
+          "$source": "gene ontology"
+        }
+      }
+    }
+  }
+}
