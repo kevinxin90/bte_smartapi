@@ -19,6 +19,7 @@ tags:
 - name: query
 - name: metadata
 - name: biothings
+- name: semmed
 paths:
   /query:
     get:
