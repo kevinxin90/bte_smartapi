@@ -663,6 +663,12 @@
             "bts:clinicalsignificance": "clinvar.rcv.clinical_significance",
             "$input": "bts:dbsnp",
             "$source": "clinvar"
+          },
+          {
+            "@type": "DiseaseOrPhenotypicFeature",
+            "bts:name": "uniprot.humsavar.disease_name",
+            "$input": "bts:dbsnp",
+            "$source": "uniprot"
           }
         ]
       }
