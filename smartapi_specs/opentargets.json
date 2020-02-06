@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "support@targetvalidation.org",
+      "name": "open targets"
+    },
+    "description": "The Open Targets Platform REST API allows language agnostic access to data available on the Open Targets Platform",
+    "termsOfService": "https://docs.targetvalidation.org/faq/privacy-and-tracking",
+    "title": "Open Target API",
+    "version": "3"
+  },
+  "servers": [
+    {
+      "description": "Production server",
+      "url": "https://platform-api.opentargets.io/v3/platform"
+    }
+  ],
+  "tags": [
+    {
+      "name": "disease"
+    },
+    {
+      "name": "gene"
+    },
+    {
+      "name": "annotation"
+    },
+    {
+      "name": "translator"
+    }
+  ],
+  "paths": {
+    "/evidence/filter?target={ensembl}&datatype=known_drug&size=1000": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Put ensembl gene ID here",
+            "in": "path",
+            "name": "ensembl",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Retrieve drugs related to gene",
+        "responses": {
+          "200": {
+            "description": "A query response object with \"results\" property"
+          }
+        },
+        "tags": [
+          "gene"
+        ],
+        "x-bte-semanticmapping": {
+          "$ref": "#/components/x-bte-semanticmapping/gene-drug"
+        }
+      }
+    }
+  },
+  "components": {
+    "x-bte-semanticmapping": {
+      "gene-drug": {
+        "@context": "http://schema.org",
+        "@type": "Gene",
+        "bts:targets": {
+          "@type": "ChemicalSubstance",
+          "bts:source": "data.unique_association_fields.datasource",
+          "bts:name": "data.drug.molecule_name",
+          "bts:type": "data.evidence.target2drug.action_type",
+          "bts:drugPhase": "data.evidence.drug2clinic.clinical_trial_phase.numeric_index",
+          "$input": "bts:ensembl",
+          "$source": "open targets"
+        }
+      }
+    }
+  }
+}
